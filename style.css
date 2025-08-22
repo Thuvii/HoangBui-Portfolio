@@ -1,0 +1,121 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9f4ef; /* soft beige */
+    color: #333;
+}
+
+/* Header */
+header {
+    background: #e9dfd1; /* darker beige */
+    color: #4b3832; /* warm brown text */
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #4b3832;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #a47148; /* terracotta hover */
+}
+
+/* Page Layout */
+.page {
+    display: none;
+    padding: 20px;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+/* Active Page */
+.page.active {
+    display: block;
+}
+
+/* Cards */
+.card, .resume-card {
+    background: #fffaf3; /* light beige */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #a47148; /* warm terracotta accent */
+}
+
+/* Resume Card Centered */
+.resume-card {
+    text-align: center;
+}
+
+/* Buttons */
+.download-btn,
+form button {
+    display: inline-block;
+    background: #a47148; /* warm terracotta */
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.download-btn:hover,
+form button:hover {
+    background: #8c5d3d; /* darker terracotta on hover */
+    transform: scale(1.05);
+}
+
+/* Contact Form */
+form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #d6cfc7;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fffaf3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+    nav ul li {
+        margin: 10px 0;
+    }
+}

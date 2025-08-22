@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header>
+        <div class="profile">
+            <!-- Replace with your picture -->
+            <img src="./image/IMG_6397.JPG" alt="Profile Picture" id="profile-pic">
+            <!-- Replace with your name and info -->
+            <h1>Hoàng Bùi</h1>
+            <p>Data Science Student | Python | Photography Enthusiast</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" data-page="intro">About Me</a></li>
+                <li><a href="#" data-page="projects">Projects</a></li>
+                <li><a href="#" data-page="contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- About Me Page -->
+        <section id="intro" class="page active">
+            <h2>About Me</h2>
+            <div class="card">
+                <p>Hello! My name is Hoang Minh Bui. I’m a passionate data science student with experience in Python and a strong interest in using data to solve real-world problems. 
+                I also enjoy photography and exploring creative ways to visualize information. 
+                I am eager to grow my skills in data analytics, machine learning, and software development, and I love collaborating on meaningful projects.</p>
+            </div>
+
+            <!-- Resume Box -->
+            <div class="card resume-card">
+                <h3>My Resume</h3>
+                <p>You can download my resume here:</p>
+                <a href="resume.pdf" download class="download-btn">Download Resume</a>
+            </div>
+        </section>
+
+        <!-- Projects Page -->
+        <section id="projects" class="page">
+            <h2>Projects / Portfolio</h2>
+            <div class="card">
+                <h3>Gemini API Agent</h3>
+                <p>Developed a command-line interface tool that leverages the Gemini API to act as an AI agent, automating code fixes by reading, writing, and executing Python files</p>
+                <a href="#">View Project</a>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact" class="page">
+            <form action="mailto:buihhh321@gmail.com" method="post" enctype="text/plain" class="card">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="Name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="Email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="Message" rows="6" required></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+
+     <script src="./script.js"></script>
