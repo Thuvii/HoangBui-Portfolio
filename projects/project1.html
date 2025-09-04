@@ -26,7 +26,7 @@
 
 <section>
     <h2>Introduce the Data</h2>
-    <p>The dataset used for this project is <a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min">League of Legends Diamond Ranked Games (10 min)</a>. It contains roughly <strong>10,000 high-diamond ranked matches</strong>, where both teams are of relatively equal skill level. Each row represents a game, and the dataset includes about <strong>40 features</strong>:</p>
+    <p>The dataset used for this project is <a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min" target="_blank">League of Legends Diamond Ranked Games (10 min)</a>. It contains roughly <strong>10,000 high-diamond ranked matches</strong>, where both teams are of relatively equal skill level. Each row represents a game, and the dataset includes about <strong>40 features</strong>:</p>
     <ul>
         <li><strong>Target Variable:</strong> blueWins (binary: 1 = blue team wins, 0 = red team wins)</li>
         <li><strong>Gold Metrics:</strong> total gold earned, gold difference, minions killed, jungle minions killed</li>
@@ -58,14 +58,14 @@
     <h2>Data Understanding & Visualization</h2>
     <p>Exploration focused on understanding how early-game leads translate into match outcomes. Planned visualizations include:</p>
     <ul>
-        <li>Correlation Heatmap – Which features correlate most with winning.</li>
+        <li>Correlation Heatmap – Which features correlate most with winning?</li>
         <img src="../image/corrletion.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
-        <li>Boxplot of Experiences Difference vs. Win.</li>
+        <li>Boxplot of Experiences Difference vs. Win - How experience affects winning</li>
         <img src="../image/exp.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
-        <li>Feature Importance Bar Chart from Random Forest.</li>
-        <img src="../image/forest.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
-        <li>Distribution Plots comparing kill differences by outcome.</li>
+        <li>Distribution Plots comparing kill differences by outcome</li>
         <img src="../image/kilsdiff.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
+        <li>Feature Importance Bar Chart from Random Forest</li>
+        <img src="../image/forest.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
     </ul>
 </section>
 
@@ -74,7 +74,7 @@
     <p>The results highlighted clear trends:</p>
     <ul>
         <li><strong>Kills and Experience Differences:</strong> The strongest predictors of winning. A team ahead in gold or minions by 10 minutes significantly increases its chance of victory.</li>
-        <li><strong>Assists:</strong> Important but mainly because they contribute to gold and experience advantages.</li>
+        <li><strong>Assists:</strong> Important, but mainly because they contribute to gold and experience advantages.</li>
         <li><strong>Objectives (Dragon, Herald, Towers):</strong> Less predictive in isolation at 10 minutes, but critical in shaping long-term leads.</li>
         <li><strong>Vision Control:</strong> Correlated with success but weaker than combat/economic leads.</li>
     </ul>
@@ -96,12 +96,12 @@
 <section>
     <h2>References</h2>
     <ul>
-        <li><a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min">League of Legends Diamond Ranked Games (10 min) Dataset – Kaggle</a></li>
-        <li><a href="https://scikit-learn.org/">Scikit-learn Documentation</a></li>
-        <li><a href="https://pandas.pydata.org/">Pandas Documentation</a></li>
+        <li><a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min" target="_blank">League of Legends Diamond Ranked Games (10 min) Dataset – Kaggle</a></li>
+        <li><a href="https://scikit-learn.org/" target="_blank">Scikit-learn Documentation</a></li>
+        <li><a href="https://pandas.pydata.org/" target="_blank">Pandas Documentation</a></li>
     </ul>
     <h2>Code</h2>
-    <h3><a href="https://github.com/Thuvii/dataMining/tree/main/project1">Project github link</a></h3>
+    <h3><a href="https://github.com/Thuvii/dataMining/tree/main/project1" target="_blank">Project github link</a></h3>
 </section>
 
 
