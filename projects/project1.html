@@ -42,7 +42,7 @@
     <p>The dataset was relatively clean, with no missing values. Pre-processing steps included:</p>
     <ol>
         <li><strong>Load Data:</strong> Imported the CSV file into a Pandas DataFrame.</li>
-        <li><strong>Define Target:</strong> Selected <code>blueWins</code> as the target variable representing whether the blue team won the match.</li>
+        <li><strong>Define Target:</strong> Selected "blueWins" as the target variable representing whether the blue team won the match.</li>
         <li><strong>Feature Engineering:</strong> Created difference features by subtracting red team metrics from blue team metrics (e.g., diffTotalGold, diffKills). This reduced redundancy and made the data easier to interpret.</li>
         <li><strong>Check Correlation and Multicollinearity:</strong> Computed pairwise correlations and calculated the Variance Inflation Factor (VIF) to detect multicollinearity among predictors. Highly correlated or redundant features were dropped to improve model stability.</li>
         <p>During feature selection, I removed the direct gold-related variables from the final predictor set. The VIF analysis showed high multicollinearity between gold and other performance metrics such as kills, objectives, and minion farming. 
@@ -78,7 +78,7 @@
         <li><strong>Objectives (Dragon, Herald, Towers):</strong> Less predictive in isolation at 10 minutes, but critical in shaping long-term leads.</li>
         <li><strong>Vision Control:</strong> Correlated with success but weaker than combat/economic leads.</li>
     </ul>
-    <p>Together, these findings answer the research question: <strong>Gold and experience advantages are the clearest early signals of victory.</strong> Other metrics, while helpful, act as indirect contributors.</p>
+    <p>Together, these findings answer the research question: <strong>Kills and experience advantages are the clearest early signals of victory.</strong> Other metrics, while helpful, act as indirect contributors.</p>
 </section>
 
 <section>
@@ -96,7 +96,7 @@
 <section>
     <h2>References</h2>
     <ul>
-        <li><a href="https://www.kaggle.com/datasets/">League of Legends Diamond Ranked Games (10 min) Dataset – Kaggle</a></li>
+        <li><a href="https://www.kaggle.com/datasets/bobbyscience/league-of-legends-diamond-ranked-games-10-min">League of Legends Diamond Ranked Games (10 min) Dataset – Kaggle</a></li>
         <li><a href="https://scikit-learn.org/">Scikit-learn Documentation</a></li>
         <li><a href="https://pandas.pydata.org/">Pandas Documentation</a></li>
     </ul>
