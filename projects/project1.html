@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Mining Project 1</title>
     <style>
-        body { font-family: Times New Roman, serif; font-size: 12pt; line-height: 1.5; margin: 40px 200px; color: #000; background: #fff; }
+        body { font-family: Times New Roman, serif; font-size: 12pt; line-height: 1.5; margin: 40px 200px; color: #000; background: #f9f4ef; }
         h1 { font-size: 20pt; text-align: center; margin-bottom: 30px; }
         h2 { font-size: 14pt; margin-top: 25px; margin-bottom: 10px; }
         section { margin-bottom: 20px; }
         ul, ol { margin-left: 30px; }
-        a { color: #000; text-decoration: none; }
+        a { color: #4b3832; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -57,16 +57,85 @@
 <section>
     <h2>Data Understanding & Visualization</h2>
     <p>Exploration focused on understanding how early-game leads translate into match outcomes. Planned visualizations include:</p>
-    <ul>
+    <ol>
         <li>Correlation Heatmap – Which features correlate most with winning?</li>
         <img src="../image/corrletion.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
+        <p>This heatmap shows the correlation coefficient between different in-game features and the blueWins variable. 
+        A value close to 1 indicates a strong positive correlation, while a value close to -1 indicates a strong negative correlation.</p>
+        <ul>
+            <li>
+                Gold and experience differences (diffGoldDiff, diffTotalGold, diffGoldPerMin, diffTotalExperience, diffExperienceDiff) all have a high positive correlation with blueWins, ranging from 0.49 to 0.51. 
+                This is consistent with the other charts, highlighting the dominance of these metrics in predicting a win.
+            </li>
+            <li>
+                "diffKills" also has a high positive correlation (0.48), further solidifying its importance
+            </li>
+            <li>
+                "diffDeaths" has a negative correlation (-0.48), which is expected since more deaths for a team are negatively associated with winning the game. This value is a strong negative correlation, 
+                almost mirroring the diffKills correlation, which makes sense as one team's kills are largely the other team's deaths.
+            </li>
+            <li>
+                The features at the bottom of the list, such as diffWardsPlaced and diffWardsDestroyed, have very low correlation, suggesting they are not as predictive of the outcome as the other features. 
+                This could be because vision control, while important, 
+                s a more nuanced variable than a simple count of wards and doesn't directly translate to a win as strongly as a gold or kill lead.
+            </li>   
+        </ul>
+        <br>
         <li>Boxplot of Experiences Difference vs. Win - How experience affects winning</li>
         <img src="../image/exp.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
+        <p>This box plot shows the distribution of the difference in experience between the blue and red teams at the 10-minute mark. 
+            The variable Blue Wins is binary, with 0 representing a red team win and 1 representing a blue team win. 
+            The central line in each box represents the median, the box itself shows the interquartile range (IQR), 
+            and the whiskers extend to the minimum and maximum values within 1.5 times the IQR. 
+            The points beyond the whiskers are outliers.</p>
+        <ul>
+            <li>
+                When the blue team wins (Blue Wins = 1), the median experience difference is positive. This means the blue team typically had more experience than the red team by the 10-minute mark.
+            </li>
+            <li>
+                When the red team wins (Blue Wins = 0), the median experience difference is negative, indicating the red team had more experience.
+            </li>
+            <li>
+                The box for blue wins is shifted to positive values, and the box for red wins is shifted to negative values. This strongly suggests that having an experience lead at 10 minutes is highly correlated with winning the game.
+            </li>
+        </ul>
+        <br>
         <li>Distribution Plots comparing kill differences by outcome</li>
         <img src="../image/kilsdiff.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
+        <p>This histogram illustrates the distribution of the difference in kills (diffKills) between the two teams, separated by the match outcome. 
+            The blue histogram corresponds to red team wins (blueWins = 0), and the orange one corresponds to blue team wins (blueWins = 1).</p>
+        <ul>
+            <li>
+                The blue histogram is centered around a negative value, showing that the red team tended to have a kill lead when they won.
+            </li>
+            <li>
+                The orange histogram is centered around a positive value, indicating that the blue team generally had a kill lead when they won.
+            </li>
+            <li>
+                The distributions for wins and losses are quite distinct with a clear separation. A higher kill difference in favor of a team makes them more likely to win the match. 
+                This reinforces the intuitive idea that getting more kills earlier in the game is a strong predictor of victory
+            </li>
+        </ul>
+        <br>
         <li>Feature Importance Bar Chart from Random Forest</li>
         <img src="../image/forest.png" alt="Feature Importance" style="max-width: 600px; height: auto; display: block; margin: 20px auto;">
-    </ul>
+        <p>This bar chart ranks the importance of various features in a Random Forest model trained to predict the match outcome. 
+        The Importance score represents how much each feature contributes to the model's predictive accuracy.</p>
+        <ul>
+            <li>
+                The most important feature by a significant margin is diffExperienceDiff (the experience difference), which has an importance score of around 0.25. 
+                This confirms the insight from the first chart: experience difference is the most crucial factor in predicting the final outcome.
+            </li>
+            <li>
+                Other important features include diffKills (kill difference) and diffTotalMinionsKilled, which also have high importance scores. 
+                This aligns with the kill difference chart and suggests that farm and kill advantages are key predictors.
+            </li>
+            <li>
+                Features like diffTowersDestroyed and diffFirstBlood have very low importance. 
+                This is likely because towers and first blood are important but have less predictive power compared to a sustained lead in kills, gold, or experience at 10 minutes.
+            </li>
+        </ul>
+    </ol>
 </section>
 
 <section>
@@ -101,7 +170,7 @@
         <li><a href="https://pandas.pydata.org/" target="_blank">Pandas Documentation</a></li>
     </ul>
     <h2>Code</h2>
-    <h3><a href="https://github.com/Thuvii/dataMining/tree/main/project1" target="_blank">Project github link</a></h3>
+    <p><a href="https://github.com/Thuvii/dataMining/tree/main/project1" target="_blank">Project github link</a></p>
 </section>
 
 
