@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mining Project 2</title>
+    <style>
+        body { font-family: Times New Roman, serif; font-size: 12pt; line-height: 1.5; margin: 40px 200px; color: #000; background: #f9f4ef; }
+        h1 { font-size: 20pt; text-align: center; margin-bottom: 30px; }
+        h2 { font-size: 14pt; margin-top: 25px; margin-bottom: 10px; }
+        section { margin-bottom: 20px; }
+        ul, ol { margin-left: 30px; }
+        a { color: #4b3832; text-decoration: none; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse; /* Merges adjacent borders into a single line */
+            padding: 8px; /* Optional: adds space inside the cells */
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Project 2 — Credit Card Fraud Detection</h1>
+      </div>
+    </header>
+
+    <section class="card">
+    <h2>1. Introduction</h2>
+      <p>
+        In this project, I focus on building and comparing several <strong>classification models</strong> to detect fraudulent credit card transactions. 
+        Fraud detection is a classic example of an <strong>imbalanced classification problem</strong>, where the majority of transactions are legitimate and only a small fraction (0.172%) are fraudulent. 
+        Because of this imbalance, traditional accuracy is not a meaningful measure of performance. 
+        Instead, I evaluate models using metrics that focus on detecting the minority class (fraud), such as <strong>precision</strong>, <strong>recall</strong>, <strong>F1-score</strong>, and <strong>Precision-Recall AUC (PR-AUC)</strong>.
+      </p>
+
+      <p>
+        The main goal of this project is to explore <strong>how different machine learning models perform under extreme class imbalance</strong> and to analyze their <strong>trade-offs</strong>:
+      </p>
+      <ul>
+        <li><strong>Logistic Regression</strong> and <strong>Linear SVM</strong> are linear models that prioritize recall when using class weights. They tend to catch most fraud cases but may also produce many false positives (low precision).</li>
+        <li><strong>Random Forest</strong> uses multiple decision trees to capture complex, nonlinear relationships. It often provides strong precision and balanced recall but is less interpretable than linear models.</li>
+        <li><strong>K-Nearest Neighbors (KNN)</strong> relies on distance in the PCA-transformed feature space. It can perform well if fraudulent transactions form distinct clusters, but may struggle with noisy or high-dimensional data.</li>
+      </ul>
+      <p> 
+        By comparing these models, the project aims to identify which algorithm offers the best balance between detecting fraud and minimizing false positives — a crucial factor in real-world fraud detection systems.
+
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>2. Data Introduction</h2>
+      <p>The data contains transactions made by European cardholders in September 2013 (two days). The features V1–V28 are principal components obtained via <strong>PCA</strong>, while <code>Time</code> and <code>Amount</code> are the original (non-PCA) columns. The target is <code>Class</code> (1 = fraud, 0 = non-fraud).</p>
+      <ul>
+        <li><strong>Transactions</strong>: 284,807</li>
+        <li><strong>Frauds</strong>: 492</li>
+        <li><strong>Source</strong>: ULB / Worldline research dataset (widely available on Kaggle)</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>3. PCA — what it is and why it was used</h2>
+      <p><strong>Principal Component Analysis (PCA)</strong> is a statistical technique that transforms original correlated features into a smaller set of linearly uncorrelated components called principal components. Each principal component is a linear combination of the original features and captures a direction of maximum variance in the data.</p>
+      <p><strong>Why PCA was used on this dataset:</strong></p>
+      <ul>
+        <li><strong>Privacy / confidentiality:</strong> The original transaction features (merchant, location, cardholder behavior, etc.) may be sensitive. PCA anonymizes the data by mixing original features into components so researchers can share useful information without exposing raw attributes.</li>
+        <li><strong>Dimensionality reduction:</strong> If original features were high-dimensional or highly correlated, PCA reduces redundancy and can simplify modeling.</li>
+        <li><strong>Noise reduction & stability:</strong> By selecting top components, PCA can reduce noisy directions and help models generalize better, though here all components V1–V28 are provided.</li>
+      </ul>
+      <p><em>Note:</em> PCA components are not directly interpretable (each component mixes many original features). Because of that, model explainability must rely on surrogate methods (e.g., SHAP on the provided features) or external domain knowledge.</p>
+    </section>
+
+    <section class="card">
+      <h2>4. Preprocessing</h2>
+      <ol>
+        <li><strong>Missing values:</strong> dataset contains no nulls; no imputation required.</li>
+        <li><strong>Scaling:</strong> PCA features are already scaled. <code>StandardScaler</code> was applied to <code>Amount</code> and <code>Time</code> to normalize them.</li>
+        <li><strong>Train-test split:</strong> 80/20 split with a fixed random seed for reproducibility.</li>
+        <li><strong>Class imbalance handling:</strong> Instead of resampling, models such as Logistic Regression, SVM, and Random Forest used <code>class_weight="balanced"</code> to automatically adjust weights inversely proportional to class frequencies.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>5. Data Exploration & Visualizations</h2>
+      <p>Exploratory analysis highlighted the extreme class imbalance and showed that fraudulent transactions often occur at lower amounts (though not exclusively). Time-of-day did not show a clear pattern.</p>
+      <h4 class="placeholder">Class distribution plot</h4>
+      <img src="../image/fraud_dis.png" alt="">
+      <div style="height:12px"></div>
+      <p style="color:var(--muted);font-size:0.95rem;margin-top:8px">These visualizations motivate the choice of evaluation metrics (Precision-Recall AUC) and justify using class weights to counter imbalance.</p>
+    </section>
+
+    <section class="card">
+      <h2>6. Modeling</h2>
+      <p>Four classifiers were trained and evaluated on the imbalanced dataset:</p>
+      <ul>
+        <li><strong>Random Forest</strong> — ensemble of decision trees with <code>n_estimators=200</code> and <code>class_weight="balanced"</code>; handles nonlinear relationships well.</li>
+        <li><strong>SVM (LinearSVC)</strong> — a linear support vector machine using <code>class_weight="balanced"</code> to compensate for class skew; effective in high-dimensional spaces.</li>
+        <li><strong>K-Nearest Neighbors (KNN)</strong> — a distance-based classifier (<code>n_neighbors=3</code>); simple but sensitive to imbalance.</li>
+        <li><strong>Logistic Regression</strong> — interpretable linear model with <code>class_weight="balanced"</code> to handle imbalance.</li>
+      </ul>
+      <p>Hyperparameters were kept mostly default for a fair baseline comparison.</p>
+    </section>
+
+    <section class="card metrics">
+      <h2>7. Evaluation</h2>
+      <p>Because the dataset is heavily imbalanced, metrics that focus on the positive class are more informative. I report <strong>Precision, Recall, F1-score,</strong> and especially <strong>Precision-Recall AUC (PR-AUC)</strong>, as models that achieve high F1-scores and PR-AUC are preferred.</p>
+
+      <table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1-score</th>
+      <th>PR-AUC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.961039</td>
+      <td>0.755102</td>
+      <td>0.845714</td>
+      <td>0.851129</td>
+    </tr>
+    <tr>
+      <td>SVM (LinearSVC)</td>
+      <td>0.070245</td>
+      <td>0.908163</td>
+      <td>0.130403</td>
+      <td>0.724624</td>
+    </tr>
+    <tr>
+      <td>KNN</td>
+      <td>0.909091</td>
+      <td>0.816327</td>
+      <td>0.860215</td>
+      <td>0.871533</td>
+    </tr>
+    <tr>
+      <td>Logistic Regression</td>
+      <td>0.057878</td>
+      <td>0.918367</td>
+      <td>0.108893</td>
+      <td>0.740037</td>
+    </tr>
+  </tbody>
+</table>
+      <div style="height:12px"></div>
+      <h4 class="placeholder">PR curves comparison</h4>
+      <img src="../image/pr_curve.png" alt="">
+      <p>
+        Each model presents a different <strong>trade-off</strong>:
+        <ul>
+          <li><strong>Linear models</strong> (SVM, Logistic Regression) — High recall, but prone to overflagging (many false alarms).</li>
+          <li><strong>Tree-based ensemble</strong> (Random Forest) — High precision and balanced recall, but less explainable and computationally heavier.</li>
+          <li><strong>Instance-based</strong> (KNN) — Can adapt to nonlinear structures but is sensitive to feature scaling and can be slow on large datasets.</li>
+        </ul>
+      </p>
+       <h4 class="placeholder">Bar graph model comparison</h4>
+      <img src="../image/bar.png" alt="">
+    </section>
+
+    <section class="card">
+      <h2>8. Storytelling — What I learned</h2>
+      <p>Based on the PR-AUC and F1-score:</p>
+      <ul>
+        <li>The <strong>K-Nearest Neighbors (KNN)</strong> model shows the best overall performance with the highest PR-AUC (0.8715) and F1-score (0.8602). This suggests that for this anonymized data, distance in the PCA-transformed feature space is highly effective in separating fraud from non-fraud cases.</li>
+        <li><strong>Random Forest</strong> is a very close second, with a high PR-AUC (0.8511) and the best precision (0.9610). The higher precision means when it flags a transaction as fraud, it's correct 96% of the time, which is valuable for reducing false alerts.</li>
+        <li><strong>SVM</strong> and <strong>Logistic Regression</strong>, despite achieving very high recall (detecting over 90% of frauds), do so at the cost of extremely low precision (0.0702 and 0.0578, respectively), resulting in poor F1-scores and the lowest PR-AUCs (0.7246 and 0.7400). This indicates they generate a massive number of false positives.</li>
+        <li>Using <code>class_weight="balanced"</code> successfully pushed all models toward higher recall, but only Random Forest and KNN managed to maintain the necessary precision for high F1 and PR-AUC scores.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>9. Impact</h2>
+      <p>Positive impacts: protects consumers and financial institutions from fraud losses. Negative / ethical considerations: false positives can inconvenience customers and introduce bias if fraud patterns differ across groups. Data confidentiality must be preserved — this dataset's PCA transformation is an example of good privacy practice.</p>
+    </section>
+
+    <section class="card">
+      <h2>10. References & Code</h2>
+      <ul>
+        <li>Dal Pozzolo, A., Caelen, O., Johnson, R. A., &amp; Bontempi, G. (2015). Calibrating Probability with Undersampling for Unbalanced Classification.</li>
+        <li>Kaggle — Credit Card Fraud Detection (ULB / Worldline)</li>
+      </ul>
+      <p>Notebook / code: <em>Insert link to your notebook (GitHub / Kaggle / Drive)</em></p>
+    </section>
+
+    <footer>
+    </footer>
+  </div>
+</body>
+</html>
