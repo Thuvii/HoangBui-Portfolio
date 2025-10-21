@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mining Project 3</title>
+    <style>
+        body { font-family: Times New Roman, serif; font-size: 12pt; line-height: 1.5; margin: 40px 200px; color: #000; background: #f9f4ef; }
+        h1 { font-size: 20pt; text-align: center; margin-bottom: 30px; }
+        h2 { font-size: 14pt; margin-top: 25px; margin-bottom: 10px; }
+        section { margin-bottom: 20px; }
+        ul, ol { margin-left: 30px; }
+        a { color: #4b3832; text-decoration: none; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+        img { display: block; margin: 10px 0; max-width: 100%; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Project 3 — Medical Insurance Cost Prediction using Polynomial Regression</h1>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>1. Introduction</h2>
+      <p>
+        This project aims to predict an individual's <strong>medical insurance cost</strong> based on personal and lifestyle attributes using regression models. 
+        The dataset is the <strong>Medical Cost Personal Dataset</strong> from Kaggle, containing:
+      </p>
+      <ul>
+        <li><strong>age:</strong> Age of the individual</li>
+        <li><strong>sex:</strong> Gender (male/female)</li>
+        <li><strong>bmi:</strong> Body mass index (numeric)</li>
+        <li><strong>children:</strong> Number of dependents covered</li>
+        <li><strong>smoker:</strong> Smoking status (yes/no)</li>
+        <li><strong>region:</strong> Residential region in the U.S.</li>
+        <li><strong>charges:</strong> Insurance cost to predict</li>
+      </ul>
+      <p>
+        The problem is to build regression models that predict <em>charges</em> and 
+        evaluate whether polynomial regression improves accuracy over linear regression.
+      </p>
+      <h3>Problem Definition:</h3>
+        <p>Build a regression model that accurately predicts charges based on the other attributes, and evaluate whether a non-linear model (polynomial regression) improves performance compared to a simple linear regression model.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. Regression Overview</h2>
+      <p><strong>Regression</strong> is a supervised learning method used to predict continuous outcomes from independent variables.</p>
+
+      <h3>Linear Regression</h3>
+      <pre>
+y = β0 + β1*x1 + β2*x2 + ... + βn*xn + ϵ
+      </pre>
+      <p>Where y is predicted charges, βi are coefficients, and ϵ is the error term.</p>
+
+      <h3>Polynomial Regression</h3>
+      <pre>
+y = β0 + β1*x + β2*x² + β3*x³ + ... + ϵ
+      </pre>
+      <p>This allows capturing non-linear relationships, e.g., cost increases for smokers or high BMI individuals.</p>
+    </section>
+
+    <section class="card">
+      <h2>3. Data Exploration</h2>
+      <p>EDA highlights:</p>
+      <ul>
+        <li>BMI correlates positively with charges.</li>
+        <li>Smoker status has the strongest impact.</li>
+        <li>Age shows a positive correlation with cost.</li>
+      </ul>
+      <H2>Visualizations</H2>
+      <ul>
+        <li>Heat map</li>
+        <img src="../image/image_project3/heatmap.png" alt="Heatmap">
+        <p>The exploratory data analysis reveals that the dominant factor influencing medical charges is smoking status <code>smoker_yes</code>, which exhibits an exceptionally high correlation of 0.79 with the target variable. This overshadows the moderate relationship with age (0.30) and the weaker correlation with BMI (0.20). Other features, such as <code>sex</code> and <code>region</code>, show negligible linear correlation to <code>charges</code>. This strong initial finding dictates that the model must accurately account for the powerful influence of smoking.</p>
+
+        <li>Charges vs BMI</li>
+        <img src="../image/image_project3/chargevsBMI.png" alt=" BMI vs Charges">
+        <p>
+            The Charges vs. BMI Scatter Plot provides the primary justification for using Polynomial Regression and interaction terms. The data separates into two distinct clusters: non-smokers, where <code>>BMI</code> has little effect on cost, and smokers, where a clear upward curve is evident as <code>>BMI</code> increases. This non-linear trend for the smoker group necessitates the use of polynomial features and an interaction term to accurately model the compounding risk factors and achieve an effective predictive model.
+        </p>
+        
+        <li>Smoker Distribution</li>
+        <img src="../image/image_project3/smokingDis.png" alt="Smoker Distribution">
+        <p>
+            The Distribution of Charges by Smoking Status visually confirms a massive, non-linear discontinuity in medical costs. Non-smokers exhibit a tight, low-cost distribution with a median around $7,000, while smokers show a dramatically higher distribution with a median near $35,000. This stark difference between the two populations suggests that a simple, single-equation linear model is inadequate, as it cannot capture this qualitative shift in cost caused by smoking status.
+        </p>
+      </ul>
+      
+     
+    </section>
+
+    <section class="card">
+  <h2>4. Preprocessing</h2>
+  <ol>
+    <li><strong>Encoding categorical variables:</strong> Columns such as <code>sex</code>, <code>smoker</code>, and <code>region</code> were transformed using <code>get_dummies()</code>. This converts categorical values into numeric features, slightly modifying the data structure for modeling.</li>
+    <li><strong>Missing values:</strong> none detected in the dataset; no imputation required.</li>
+    <li><strong>Features:</strong> all numeric and encoded variables were included to fully capture information affecting insurance cost.</li>
+    <li><strong>Scaling:</strong> After creating polynomial features, <code>StandardScaler</code> was applied to normalize data for better numerical stability.</li>
+  </ol>
+</section>
+
+
+    <section class="card">
+      <h2>5. Modeling — Linear Regression</h2>
+      <pre>
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+      </pre>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>R²</td>
+            <td>~0.73</td>
+          </tr>
+          <tr>
+            <td>Adj R²</td>
+            <td>~0.73</td>
+          </tr>
+          <tr>
+            <td>RMSE</td>
+            <td>Moderate error; underestimation for high-cost cases</td>
+          </tr>
+        </tbody>
+      </table>
+      <img src="../image/image_project3/linear.png" alt="Linear regression actual vs predicted">
+    </section>
+
+    <section class="card">
+      <h2>6. Modeling — Polynomial Regression</h2>
+      <pre><code>
+        from sklearn.preprocessing import PolynomialFeatures
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        X_train_poly = poly.fit_transform(X_train)
+        X_test_poly = poly.transform(X_test)
+
+        model = LinearRegression()
+        model.fit(X_train_poly, y_train)
+        y_pred_poly = model.predict(X_test_poly)
+      </code></pre>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>R²</td>
+            <td>~0.84</td>
+          </tr>
+          <tr>
+            <td>Adj R²</td>
+            <td>~0.83</td>
+          </tr>
+          <tr>
+            <td>RMSE</td>
+            <td>Lower than linear regression</td>
+          </tr>
+        </tbody>
+      </table>
+      <img src="../image/image_project3/linear.png" alt="Polynomial regression actual vs predicted">
+    </section>
+
+    <section class="card">
+      <h2>7. Future Experiments</h2>
+      <ul>
+        <li>Ridge or Lasso regression for regularization</li>
+        <li>Log-transforming charges to reduce skewness</li>
+        <li>Feature selection or removing less-informative interactions</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>8. Impact</h2>
+      <p>
+        Positive impacts include supporting fair insurance pricing and personalized health risk assessment. 
+        Ethical considerations involve privacy and avoiding bias in automated pricing models.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>9. Conclusion</h2>
+      <p>
+        Polynomial regression improved accuracy (R² ~0.85 vs ~0.75) by capturing non-linear effects. 
+        Preprocessing (encoding + scaling) was essential. Future work could explore regularization and feature interpretability techniques like SHAP values.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>10. References & Code</h2>
+      <ul>
+        <li>Kaggle: <a href="https://www.kaggle.com/mirichoi0218/insurance" target="_blank">Medical Cost Personal Dataset</a></li>
+        <li>Scikit-learn documentation: LinearRegression, PolynomialFeatures</li>
+        <li>James et al. (2013). An Introduction to Statistical Learning.</li>
+      </ul>
+      <p>Code: <em><a href="" target="_blank">Jupyter Notebook</a></em></p>
+    </section>
+
+  </div>
+</body>
+</html>
