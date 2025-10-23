@@ -32,8 +32,8 @@
     <section class="card">
       <h2>1. Introduction</h2>
       <p>
-        This project aims to predict an individual's <strong>medical insurance cost</strong> based on personal and lifestyle attributes using regression models. 
-        The dataset is the <strong>Medical Cost Personal Dataset</strong> from Kaggle, containing:
+       The goal of this project is to build a predictive model that estimates an individual's medical insurance cost based on their personal and lifestyle attributes. 
+       The dataset used is the Medical Cost Personal Dataset from Kaggle, which includes the following features:
       </p>
       <ul>
         <li><strong>age:</strong> Age of the individual</li>
@@ -44,28 +44,37 @@
         <li><strong>region:</strong> Residential region in the U.S.</li>
         <li><strong>charges:</strong> Insurance cost to predict</li>
       </ul>
-      <p>
+      <p>This dataset provides an opportunity to understand how different factors, 
+        particularly age, BMI, and smoking habits, influence medical expenses.</p>
+      <h3>Problem Definition:</h3>
+        <p>Build a regression model that accurately predicts charges based on the other attributes, and evaluate whether a non-linear model (polynomial regression) improves performance compared to a simple linear regression model.</p>
+        <p>
         The problem is to build regression models that predict <em>charges</em> and 
         evaluate whether polynomial regression improves accuracy over linear regression.
       </p>
-      <h3>Problem Definition:</h3>
-        <p>Build a regression model that accurately predicts charges based on the other attributes, and evaluate whether a non-linear model (polynomial regression) improves performance compared to a simple linear regression model.</p>
     </section>
 
     <section class="card">
       <h2>2. Regression Overview</h2>
-      <p><strong>Regression</strong> is a supervised learning method used to predict continuous outcomes from independent variables.</p>
+      <p><strong>Regression</strong> is a supervised machine learning technique that models the relationship between one dependent variable (target) and one or more independent variables (features). The goal is to learn a mathematical function that best fits the data and allows prediction of continuous values.</p>
 
       <h3>Linear Regression</h3>
       <pre>
-y = β0 + β1*x1 + β2*x2 + ... + βn*xn + ϵ
+        y = β0 + β1*x1 + β2*x2 + ... + βn*xn + ϵ
       </pre>
-      <p>Where y is predicted charges, βi are coefficients, and ϵ is the error term.</p>
+      <p>Where:</p>
+       <ul>
+      
+        <li>y is predicted charges</li>
+        <li>βi are coefficients</li>
+        <li>ϵ is the error term</li>
+      </ul>
 
       <h3>Polynomial Regression</h3>
       <pre>
-y = β0 + β1*x + β2*x² + β3*x³ + ... + ϵ
+        y = β0 + β1*x + β2*x² + β3*x³ + ... + ϵ
       </pre>
+     
       <p>This allows capturing non-linear relationships, e.g., cost increases for smokers or high BMI individuals.</p>
     </section>
 
@@ -140,6 +149,8 @@ y_pred = model.predict(X_test)
         </tbody>
       </table>
       <img src="../image/image_project3/linear.png" alt="Linear regression actual vs predicted">
+      <p>This plot show that the simple linear model is inadequate, suffering from significant systemic underestimation of high charges. For actual costs exceeding $20,000, 
+        the predicted values consistently fall below the line of perfect fit. This also shows that the model cannot capture the inherent non-linearity in the data, resulting in a biased and poor fit, particularly for the most expensive cases in the dataset.</p>
     </section>
 
     <section class="card">
@@ -176,7 +187,8 @@ y_pred = model.predict(X_test)
           </tr>
         </tbody>
       </table>
-      <img src="../image/image_project3/linear.png" alt="Polynomial regression actual vs predicted">
+      <img src="../image/image_project3/poly.png" alt="Polynomial regression actual vs predicted">
+      <p>In contrast, this plot shows a dramatic improvement in predictive accuracy. Due to the successful incorporation of polynomial and interaction terms, the model's predictions now adhere closely to the line of perfect fit across the entire range, from low costs to over $60,000. This indicates that the Polynomial Regression model successfully addressed the systemic bias and non-linearity, making it a far more reliable and accurate tool for predicting insurance charges.</p>
     </section>
 
     <section class="card">
