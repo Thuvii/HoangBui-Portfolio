@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project 4 - Customer Segmentation using Clustering</title>
+    <style>
+        body { font-family: Times New Roman, serif; font-size: 12pt; line-height: 1.5; margin: 40px 200px; color: #000; background: #f9f4ef; }
+        h1 { font-size: 20pt; text-align: center; margin-bottom: 30px; }
+        h2 { font-size: 14pt; margin-top: 25px; margin-bottom: 10px; }
+        section { margin-bottom: 20px; }
+        ul, ol { margin-left: 30px; }
+        a { color: #4b3832; text-decoration: none; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+        img { display: block; margin: 10px 0; max-width: 100%; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Project 4: Customer Segmentation using Clustering</h1>
+
+    <section>
+        <h2>1. Introduce the Problem</h2>
+        <p>
+            In this project, the goal is to <strong>segment customers</strong> based on their purchasing behavior using clustering techniques.
+            Businesses often have thousands of customers, but not all customers behave the same way.
+            Some buy frequently, others rarely, and some spend much more money than others.
+            Understanding these different groups (or <em>segments</em>) can help a business create <strong>targeted marketing strategies</strong>,
+            improve customer retention, and increase overall revenue.
+        </p>
+        <p>The main questions I aim to answer are:</p>
+        <ul>
+            <li>Can we identify distinct customer groups based on their <strong>recency</strong>, <strong>frequency</strong>, and <strong>monetary value</strong>?</li>
+            <li>What characterizes each group — for example, which cluster represents “loyal” or “high-value” customers?</li>
+            <li>How can these insights help a business make data-driven marketing decisions?</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>2. What is Clustering and How Does it Work?</h2>
+        <p>
+            <strong>Clustering</strong> is an <strong>unsupervised machine learning</strong> technique that automatically groups similar data points together based on their features.
+            Unlike classification, clustering does not use labeled data — it simply finds patterns in the data itself.
+        </p>
+        <p>In this project, I used <strong>K-Means clustering</strong>, one of the most common algorithms. Here’s how it works:</p>
+        <ol>
+            <li>The algorithm randomly selects <em>k</em> cluster centers (called centroids).</li>
+            <li>Each data point is assigned to the nearest centroid based on distance (usually Euclidean distance).</li>
+            <li>The centroids are updated by taking the mean of all points in each cluster.</li>
+            <li>Steps 2–3 repeat until the centroids no longer change much.</li>
+        </ol>
+        <p>The main parameter is <strong>k</strong>, the number of clusters. I used the <em>Elbow Method</em> and <em>Silhouette Score</em> to determine the optimal k.</p>
+    </section>
+
+    <section>
+        <h2>3. Introduce the Data</h2>
+        <p>
+            The dataset used is the
+            <a href="https://www.kaggle.com/datasets/lakshmi25npathi/online-retail-dataset" target="_blank">
+                Online Retail II Dataset
+            </a>
+            from Kaggle. It contains transactions from a UK-based online retail store between 2009 and 2011.
+        </p>
+        <p>Each row represents an invoice item, including:</p>
+        <ul>
+            <li><strong>InvoiceNo</strong>: invoice number</li>
+            <li><strong>StockCode</strong>: product ID</li>
+            <li><strong>Description</strong>: product name</li>
+            <li><strong>Quantity</strong>: number of items purchased</li>
+            <li><strong>InvoiceDate</strong>: date and time of the transaction</li>
+            <li><strong>UnitPrice</strong>: price per item</li>
+            <li><strong>CustomerID</strong>: unique identifier for each customer</li>
+            <li><strong>Country</strong>: location of the customer</li>
+        </ul>
+        <p>For clustering, I used three key features derived from RFM analysis:</p>
+        <ul>
+            <li><strong>Recency:</strong> Days since the customer’s last purchase (lower = more recent activity)</li>
+            <li><strong>Frequency:</strong> Number of unique purchases (higher = more active customer)</li>
+            <li><strong>Monetary:</strong> Total amount spent (higher = more valuable customer)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>4. Data Understanding / Visualization</h2>
+        <p>
+            To better understand the data, I computed <strong>RFM values</strong> for each customer. I noticed:
+        </p>
+        <ul>
+            <li>Some customers have very high monetary values, showing a strong skew — typical in retail data.</li>
+            <li>A few customers had missing or invalid values (like negative quantities or zero totals), which were removed.</li>
+            <li>Histograms showed that <strong>Recency</strong> and <strong>Monetary</strong> were right-skewed, so a <em>log transformation</em> was applied to normalize the data.</li>
+        </ul>
+        <p>
+            Using scatter plots of <code>Recency</code> vs. <code>Monetary</code> and <code>Frequency</code> vs. <code>Monetary</code>, I observed:
+        </p>
+        <ul>
+            <li>Some customers buy rarely but spend a lot.</li>
+            <li>Others buy often but spend small amounts.</li>
+        </ul>
+        <p>
+            This visualization helped confirm that clustering was a suitable approach, since there were natural differences in behavior.
+        </p>
+    </section>
+
+    <section>
+        <h2>5. Pre-processing the Data</h2>
+        <p>The following preprocessing steps were performed:</p>
+        <ol>
+            <li><strong>Removed missing values and negative quantities</strong> — to ensure clean, valid transactions.</li>
+            <li><strong>Aggregated by CustomerID</strong> — to compute RFM metrics per customer.</li>
+            <li><strong>Log-transformed</strong> Recency, Frequency, and Monetary — to reduce skewness.</li>
+            <li><strong>Standardized (scaled)</strong> the data using <code>StandardScaler</code> — since K-Means is distance-based and sensitive to variable scales.</li>
+            <li><strong>Checked for NaNs</strong> again before modeling to avoid KMeans errors.</li>
+        </ol>
+        <p>These steps ensured fair clustering where all features contributed equally.</p>
+    </section>
+
+    <section>
+        <h2>6. Modeling (Clustering)</h2>
+        <p>
+            I applied <strong>K-Means clustering</strong> to the scaled RFM data.
+            To find the best <em>k</em>, I used the <strong>Elbow Method</strong> and <strong>Silhouette Score</strong>.
+            After testing different <em>k</em> values, I found that <strong>k = 4</strong> provided the best balance between simplicity and separation quality.
+        </p>
+
+        <table>
+            <tr>
+                <th>Cluster</th>
+                <th>Recency</th>
+                <th>Frequency</th>
+                <th>Monetary</th>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>5.01</td>
+                <td>0.86</td>
+                <td>5.51</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2.07</td>
+                <td>2.65</td>
+                <td>8.27</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>2.68</td>
+                <td>1.16</td>
+                <td>6.08</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>4.01</td>
+                <td>1.72</td>
+                <td>7.16</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>7. Storytelling (Clustering Analysis)</h2>
+        <p>The four clusters reveal distinct customer segments:</p>
+        <table>
+            <tr>
+                <th>Cluster</th>
+                <th>Behavior Description</th>
+                <th>Interpretation</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Low Recency, High Frequency, High Monetary</td>
+                <td><strong>Loyal high spenders</strong> — active, valuable customers who buy often.</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Moderate Recency and Frequency, High Monetary</td>
+                <td><strong>Potential loyalists</strong> — good customers but less frequent buyers.</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Recent but low Frequency and Monetary</td>
+                <td><strong>New customers</strong> — just started buying, may grow in value.</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>High Recency, Low Frequency and Monetary</td>
+                <td><strong>At-risk customers</strong> — haven’t purchased in a long time.</td>
+            </tr>
+        </table>
+        <p>
+            From this, businesses can take action such as:
+        </p>
+        <ul>
+            <li>Offer <strong>exclusive rewards</strong> for Cluster 1 to maintain loyalty.</li>
+            <li><strong>Re-engage</strong> Cluster 0 with targeted promotions.</li>
+            <li>Send <strong>personalized recommendations</strong> to Cluster 2 to increase their engagement.</li>
+        </ul>
+        <p>
+            Thus, clustering helped transform raw transaction data into actionable customer insights.
+        </p>
+    </section>
+
+    <section>
+        <h2>8. Impact Section</h2>
+        <p>
+            The project’s potential <strong>social and ethical impact</strong> lies in how the business uses the data.
+            While clustering can improve customer experience through personalized marketing, it can also raise <strong>privacy concerns</strong> if customer data is used without proper consent.
+            Additionally, heavy reliance on segmentation could unintentionally exclude lower-spending customers from benefits, creating fairness issues.
+        </p>
+        <p>
+            Hence, businesses should use clustering results responsibly, ensuring <strong>data transparency</strong> and <strong>ethical marketing practices</strong>.
+        </p>
+    </section>
+
+    <section>
+        <h2>9. References</h2>
+        <ul>
+            <li><a href="https://www.kaggle.com/datasets/abhishekrp1517/online-retail-transactions-dataset" target="_blank">Kaggle Dataset: Online Retail Dataset</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>10. Code</h2>
+        <p>
+        </p>
+    </section>
+</body>
+</html>
